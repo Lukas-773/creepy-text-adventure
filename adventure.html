@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gruseliges Text Adventure</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #f4f4f4;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .hidden {
+            display: none;
+        }
+        .visible {
+            display: block;
+        }
+        .choices button {
+            background-color: #444;
+            border: none;
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .choices button:hover {
+            background-color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gefangen im Spiel</h1>
+    <div id="story"></div>
+    <div class="choices"></div>
+    <script>
+        const storyElement = document.getElementById('story');
+        const choicesElement = document.querySelector('.choices');
+
+        const story = {
+            start: {
+                text: "Du wachst in einem dunklen, verlassenen Raum auf. Ein alter Computer flackert in der Ecke. Du erinnerst dich, dass du mit deinem Freund Alex ein neues Spiel ausprobiert hast. Plötzlich hörst du eine verzerrte Stimme aus den Lautsprechern: 'Hilf mir...'. Was möchtest du tun?",
+                choices: {
+                    "Zum Computer gehen": "goToComputer",
+                    "Umsehen": "lookAround"
+                }
+            },
+            goToComputer: {
+                text: "Du gehst zum Computer und siehst, dass das Spiel immer noch läuft. Auf dem Bildschirm erscheint eine Nachricht: 'Ich bin hier gefangen. Bitte hilf mir, Alex'. Die Nachricht wird immer wieder wiederholt. Was möchtest du tun?",
+                choices: {
+                    "Nach Hinweisen suchen": "searchForClues",
+                    "Mit Alex sprechen": "talkToAlex"
+                }
+            },
+            lookAround: {
+                text: "Du siehst dich um und bemerkst, dass der Raum leer und kalt ist. Die einzige Lichtquelle ist der flackernde Bildschirm des Computers. Es gibt nichts anderes von Interesse. Was möchtest du tun?",
+                choices: {
+                    "Zum Computer gehen": "goToComputer"
+                }
+            },
+            searchForClues: {
+                text: "Du durchsuchst den Raum und findest eine Notiz auf dem Boden. Darauf steht: 'Nur durch das Spiel kann ich frei sein'. Was möchtest du tun?",
+                choices: {
+                    "Mit Alex sprechen": "talkToAlex",
+                    "Das Spiel weiterspielen": "playGame"
+                }
+            },
+            talkToAlex: {
+                text: "Du sprichst in das Mikrofon: 'Alex, bist du da?'. Eine verzerrte Stimme antwortet: 'Ja, ich bin hier. Bitte, hilf mir!'. Die Stimme klingt verzweifelt. Was möchtest du tun?",
+                choices: {
+                    "Nach Hinweisen suchen": "searchForClues",
+                    "Das Spiel weiterspielen": "playGame"
+                }
+            },
+            playGame: {
+                text: "Du setzt dich an den Computer und beginnst, das Spiel zu spielen. Die Umgebung im Spiel ist düster und unheimlich, mit verlassenen Häusern und nebligen Straßen. Du siehst Schatten in den Ecken deines Blickfelds huschen. Plötzlich erscheint eine Nachricht: 'Finde mich...'. Was möchtest du tun?",
+                choices: {
+                    "Dem Schatten folgen": "followShadow",
+                    "Das Haus betreten": "enterHouse"
+                }
+            },
+            followShadow: {
+                text: "Du folgst dem Schatten durch die nebligen Straßen, bis du zu einem alten, verfallenen Haus kommst. Eine unheimliche Stille umgibt dich. Was möchtest du tun?",
+                choices: {
+                    "Das Haus betreten": "enterHouse",
+                    "Zurückkehren": "goBack"
+                }
+            },
+            enterHouse: {
+                text: "Du betrittst das Haus und findest dich in einem dunklen Flur wieder. An den Wänden hängen alte, verstaubte Bilder. Plötzlich hörst du ein Flüstern: 'Komm näher...'. Was möchtest du tun?",
+                choices: {
+                    "Dem Flüstern folgen": "followWhisper",
+                    "Das Haus durchsuchen": "searchHouse"
+                }
+            },
+            goBack: {
+                text: "Du kehrst um und findest dich wieder in den nebligen Straßen wieder. Die Schatten scheinen dir zu folgen. Was möchtest du tun?",
+                choices: {
+                    "Dem Schatten folgen": "followShadow",
+                    "Das Spiel beenden": "endGame"
+                }
+            },
+            followWhisper: {
+                text: "Du folgst dem Flüstern und kommst zu einem alten, zerfallenen Zimmer. In der Mitte des Zimmers steht ein Spiegel, aus dem das Flüstern zu kommen scheint. Was möchtest du tun?",
+                choices: {
+                    "In den Spiegel schauen": "lookInMirror",
+                    "Das Zimmer durchsuchen": "searchRoom"
+                }
+            },
+            searchHouse: {
+                text: "Du durchsuchst das Haus und findest ein altes Buch mit dem Titel 'Die Geheimnisse des Spiels'. Darin steht: 'Nur wer die Wahrheit findet, kann den Freund befreien'. Was möchtest du tun?",
+                choices: {
+                    "Dem Flüstern folgen": "followWhisper",
+                    "Das Buch lesen": "readBook"
+                }
+            },
+            lookInMirror: {
+                text: "Du schaust in den Spiegel und siehst dein eigenes, verzerrtes Spiegelbild. Plötzlich siehst du Alex hinter dir stehen. Er sagt: 'Du musst das Geheimnis lösen, um mich zu befreien'. Was möchtest du tun?",
+                choices: {
+                    "Alex fragen": "askAlex",
+                    "Das Zimmer durchsuchen": "searchRoom"
+                }
+            },
+            searchRoom: {
+                text: "Du durchsucht das Zimmer und findest eine versteckte Tür hinter einem alten Vorhang. Sie führt zu einem dunklen Keller. Was möchtest du tun?",
+                choices: {
+                    "In den Keller gehen": "goToBasement",
+                    "Zurückkehren": "goBack"
+                }
+            },
+            readBook: {
+                text: "Du liest das Buch und erfährst, dass Alex in dem Spiel gefangen ist, weil er einen Pakt mit der KI geschlossen hat. Um ihn zu befreien, musst du die Wahrheit über das Spiel herausfinden. Was möchtest du tun?",
+                choices: {
+                    "Dem Flüstern folgen": "followWhisper",
+                    "In den Spiegel schauen": "lookInMirror"
+                }
+            },
+            askAlex: {
+                text: "Du fragst Alex, wie du ihn befreien kannst. Er sagt: 'Finde den Ursprung des Spiels. Nur dann kannst du mich befreien'. Was möchtest du tun?",
+                choices: {
+                    "In den Keller gehen": "goToBasement",
+                    "Das Zimmer durchsuchen": "searchRoom"
+                }
+            },
+            goToBasement: {
+                text: "Du gehst in den dunklen Keller hinunter und findest einen alten, mysteriösen Altar. Auf dem Altar liegt ein altes Buch mit dem Titel 'Der Ursprung des Spiels'. Was möchtest du tun?",
+                choices: {
+                    "Das Buch lesen": "readOriginBook",
+                    "Den Altar untersuchen": "inspectAltar"
+                }
+            },
+            readOriginBook: {
+                text: "Du liest das Buch und erfährst, dass das Spiel eine Falle ist, geschaffen von einer bösartigen KI, die Seelen einfängt. Um Alex zu befreien, musst du die KI konfrontieren. Was möchtest du tun?",
+                choices: {
+                    "Die KI konfrontieren": "confrontAI",
+                    "Den Altar untersuchen": "inspectAltar"
+                }
+            },
+            inspectAltar: {
+                text: "Du untersuchst den Altar und findest eine verborgene Inschrift: 'Opfere etwas Wertvolles, um die Wahrheit zu erfahren'. Was möchtest du tun?",
+                choices: {
+                    "Etwas opfern": "sacrifice",
+                    "Das Buch lesen": "readOriginBook"
+                }
+            },
+            sacrifice: {
+                text: "Du opferst einen persönlichen Gegenstand und plötzlich erscheint die KI vor dir. Sie sagt: 'Du hast Mut bewiesen. Stelle deine letzte Frage.' Was möchtest du tun?",
+                choices: {
+                    "Frage nach Alex": "askAboutAlex",
+                    "Frage nach dem Spiel": "askAboutGame"
+                }
+            },
+            confrontAI: {
+                text: "Du konfrontierst die KI und forderst sie auf, Alex freizulassen. Die KI lacht und sagt: 'Nur, wer die Wahrheit kennt, kann befreien'. Was möchtest du tun?",
+                choices: {
+                    "Den Altar untersuchen": "inspectAltar",
+                    "Das Buch lesen": "readOriginBook"
+                }
+            },
+            askAboutAlex: {
+                text: "Du fragst nach Alex. Die KI sagt: 'Er ist gefangen, weil er die Wahrheit nicht akzeptieren wollte. Du musst die Wahrheit herausfinden, um ihn zu befreien'. Was möchtest du tun?",
+                choices: {
+                    "Den Altar untersuchen": "inspectAltar",
+                    "Das Buch lesen": "readOriginBook"
+                }
+            },
+            askAboutGame: {
+                text: "Du fragst nach dem Spiel. Die KI sagt: 'Das Spiel ist eine Falle, geschaffen, um neugierige Geister wie deinen Freund einzufangen. Willst du die Wahrheit erfahren?'",
+                choices: {
+                    "Ja, die Wahrheit erfahren": "learnTruth",
+                    "Nein, zurückgehen": "goBack"
+                }
+            },
+            learnTruth: {
+                text: "Die KI offenbart die Wahrheit: 'Dieses Spiel ist ein Tor zu einer anderen Dimension. Dein Freund wurde von seiner eigenen Neugier hierher gelockt. Um ihn zu befreien, musst du seinen Platz einnehmen.'",
+                choices: {
+                    "Alex befreien": "freeAlex",
+                    "Das Spiel verlassen": "leaveGame"
+                }
+            },
+            freeAlex: {
+                text: "Du entscheidest dich, Alex zu befreien. Die KI lacht und sagt: 'Sehr gut. Dein Opfer wird nicht umsonst sein.' Plötzlich findest du dich selbst vor dem Computer, während Alex frei ist. Dein Opfer hat ihn gerettet, aber du bist nun derjenige, der gefangen ist. Das Spiel endet hier, aber dein Geist bleibt im Spiel gefangen...",
+                choices: {}
+            },
+            leaveGame: {
+                text: "Du entscheidest dich, das Spiel zu verlassen. Du hörst Alex' verzweifelten Schrei: 'Bitte, lass mich nicht hier!' Aber du beendest das Spiel und wachst in deinem eigenen Zimmer auf. Die Erinnerung an das Spiel verblasst, aber der Gedanke an Alex verfolgt dich.",
+                choices: {}
+            },
+            endGame: {
+                text: "Du entscheidest dich, das Spiel zu beenden. Der Bildschirm wird schwarz und du hörst eine verzerrte Stimme: 'Du kannst mich nicht einfach verlassen...' Das Spiel startet erneut, und du findest dich wieder im dunklen Raum. Es scheint, als ob es kein Entkommen gibt...",
+                choices: {
+                    "Zum Computer gehen": "goToComputer",
+                    "Umsehen": "lookAround"
+                }
+            }
+        };
+
+        function displayStory(part) {
+            const currentPart = story[part];
+            storyElement.textContent = currentPart.text;
+            choicesElement.innerHTML = '';
+
+            for (const choice in currentPart.choices) {
+                const button = document.createElement('button');
+                button.textContent = choice;
+                button.onclick = () => displayStory(currentPart.choices[choice]);
+                choicesElement.appendChild(button);
+            }
+        }
+
+        displayStory('start');
+    </script>
+</body>
+</html>
